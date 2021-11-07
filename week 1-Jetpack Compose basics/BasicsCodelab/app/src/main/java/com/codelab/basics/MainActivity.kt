@@ -50,9 +50,7 @@ private fun MyApp() {
             shouldShowOnBoarding = false
         }
     } else {
-        Surface {
-            Text("apple")
-        }
+        LayoutCodelab()
     }
 }
 
