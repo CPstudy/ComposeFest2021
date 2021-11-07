@@ -30,16 +30,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons.Filled
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,13 +65,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun MyApp() {
-    var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
-
-    if (shouldShowOnboarding) {
-        OnboardingScreen(onContinueClicked = { shouldShowOnboarding = false })
-    } else {
-        Greetings()
-    }
+    LayoutCodelab()
 }
 
 @Composable
@@ -215,5 +207,62 @@ fun DefaultPreview() {
 fun OnboardingPreview() {
     BasicsCodelabTheme {
         OnboardingScreen(onContinueClicked = {})
+    }
+}
+
+@Preview(
+    showBackground = true
+)
+@Composable
+private fun LayoutCodelab() {
+    BasicsCodelabTheme {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Layout Codelab"
+                        )
+                    },
+                    actions = {
+                        IconButton(onClick = {
+
+                        }) {
+                            Icon(Filled.Favorite, contentDescription = null)
+                        }
+                    }
+                )
+            },
+            bottomBar = {
+                BottomAppBar {
+
+                }
+            }
+        ) { innerPadding ->
+            BodyContent(modifier = Modifier
+                .padding(innerPadding)
+                .padding(8.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun BodyContent(modifier: Modifier = Modifier) {
+    Surface(modifier = modifier) {
+        SampleList()
+    }
+}
+
+@Composable
+private fun SampleList() {
+    val scrollableState = rememberLazyListState()
+
+    LazyColumn(
+        state = scrollableState
+    ) {
+        items(100) {
+            Text("item $it")
+        }
     }
 }
