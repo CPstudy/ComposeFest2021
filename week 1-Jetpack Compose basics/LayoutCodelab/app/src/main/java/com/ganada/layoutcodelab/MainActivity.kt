@@ -3,10 +3,7 @@ package com.ganada.layoutcodelab
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -119,102 +116,24 @@ fun LayoutsCodelab() {
             )
         }
     ) { innerPadding ->
-        SimpleList()
+        BodyContent(Modifier.padding(innerPadding))
     }
 }
 
-@Preview
-@Composable
-fun LayoutsCodelabPreview() {
-    LayoutCodelabTheme {
-        LayoutsCodelab()
-    }
-}
-
-@Preview
 @Composable
 fun BodyContent(modifier: Modifier = Modifier) {
-    StaggeredGrid(modifier = modifier) {
-        for (topic in topics) {
-            Chip(modifier = Modifier.padding(8.dp), text = topic)
-        }
-    }
-}
-
-@Preview
-@Composable
-fun SimpleList() {
-    val listSize = 100
-    val scrollState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-
-    Column {
-        Row {
-            Button(
-                onClick = {
-                    coroutineScope.launch {
-                        scrollState.animateScrollToItem(0)
-                    }
+    Row(modifier = modifier
+        .background(color = Color.LightGray)
+        .padding(16.dp)
+        .size(200.dp)
+        .horizontalScroll(rememberScrollState()),
+        content = {
+            StaggeredGrid {
+                for (topic in topics) {
+                    Chip(modifier = Modifier.padding(8.dp), text = topic)
                 }
-            ) {
-                Text("Scroll to the top")
             }
-            Button(
-                onClick = {
-                    coroutineScope.launch {
-                        scrollState.animateScrollToItem(listSize - 1)
-                    }
-                }
-            ) {
-                Text("Scroll to the bottom")
-            }
-        }
-        LazyColumn(state = scrollState) {
-            items(listSize) {
-                ImageListItem(it)
-            }
-        }
-    }
-}
-
-@Composable
-fun ImageListItem(index: Int) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-
-        Image(
-            painter = rememberImagePainter(
-                data = "https://developer.android.com/images/brand/Android_Robot.png"
-            ),
-            contentDescription = "Android Logo",
-            modifier = Modifier.size(50.dp)
-        )
-        Spacer(Modifier.width(10.dp))
-        Text("Item #$index", style = MaterialTheme.typography.subtitle1)
-    }
-}
-
-@Composable
-fun MyOwnColumn(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    Layout(
-        modifier = modifier,
-        content = content
-    ) { measurables, constraints ->
-        val placeables = measurables.map { measurable ->
-            measurable.measure(constraints)
-        }
-
-        var yPosition = 0
-
-        layout(constraints.maxWidth, constraints.maxHeight) {
-            placeables.forEach { placeable ->
-                placeable.placeRelative(x = 0, y = yPosition)
-                yPosition += placeable.height
-            }
-        }
-    }
+        })
 }
 
 @Composable
@@ -227,6 +146,7 @@ fun StaggeredGrid(
         modifier = modifier,
         content = content
     ) { measurables, constraints ->
+
         // Keep track of the width of each row
         val rowWidths = IntArray(rows) { 0 }
 
@@ -236,7 +156,6 @@ fun StaggeredGrid(
         // Don't constrain child views further, measure them with given constraints
         // List of measured children
         val placeables = measurables.mapIndexed { index, measurable ->
-
             // Measure each child
             val placeable = measurable.measure(constraints)
 
@@ -260,12 +179,12 @@ fun StaggeredGrid(
         // Y of each row, based on the height accumulation of previous rows
         val rowY = IntArray(rows) { 0 }
         for (i in 1 until rows) {
-            rowY[i] = rowY[i-1] + rowHeights[i-1]
+            rowY[i] = rowY[i - 1] + rowHeights[i - 1]
         }
 
         // Set the size of the parent layout
         layout(width, height) {
-            // x cord we have placed up to, per row
+            // x co-ord we have placed up to, per row
             val rowX = IntArray(rows) { 0 }
 
             placeables.forEachIndexed { index, placeable ->
@@ -292,7 +211,8 @@ fun Chip(modifier: Modifier = Modifier, text: String) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
-                modifier = Modifier.size(16.dp, 16.dp)
+                modifier = Modifier
+                    .size(16.dp, 16.dp)
                     .background(color = MaterialTheme.colors.secondary)
             )
             Spacer(Modifier.width(4.dp))
@@ -306,5 +226,13 @@ fun Chip(modifier: Modifier = Modifier, text: String) {
 fun ChipPreview() {
     LayoutCodelabTheme {
         Chip(text = "Hi there")
+    }
+}
+
+@Preview
+@Composable
+fun LayoutsCodelabPreview() {
+    LayoutCodelabTheme {
+        LayoutsCodelab()
     }
 }
