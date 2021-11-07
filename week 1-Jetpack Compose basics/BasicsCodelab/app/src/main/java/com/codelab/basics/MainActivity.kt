@@ -78,18 +78,53 @@ private fun MyApp() {
 
 @Composable
 private fun OnboardingScreen(onContinueClicked: () -> Unit) {
+    var enabled by remember {
+        mutableStateOf(false)
+    }
+
     Surface {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Welcome to the Basics Codelab!")
+            Surface(
+                color = MaterialTheme.colors.error,
+                modifier = Modifier.padding(12.dp)
+            ) {
+                if (enabled) {
+                    Text(
+                        text = "Welcome to the Basics Codelab!",
+                        modifier = Modifier.padding(20.dp)
+                    )
+                } else {
+                    Text(
+                        text = "Welcome to the Basics Codelab! $enabled",
+                        modifier = Modifier.padding(20.dp)
+                    )
+                }
+            }
             Button(
                 modifier = Modifier.padding(vertical = 24.dp),
                 onClick = onContinueClicked
             ) {
                 Text("Continue")
+            }
+            Row() {
+                Button(
+                    onClick = {
+                        enabled = !enabled
+                    }
+                ) {
+                    Text("Row1")
+                }
+                Button(
+                    onClick = {
+                        enabled = !enabled
+                    }
+                ) {
+                    Text("Row2")
+                }
             }
         }
     }
